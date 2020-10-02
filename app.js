@@ -3,6 +3,11 @@ const app = express()
 const data2 = require("./resultado.json")
 const puppeteer = require('puppeteer')
 
+app.get("", (req, res) => {
+	
+	
+	res.json("Hello World!")
+})
 
 
 app.get("/:id", (req, res) => {
@@ -30,7 +35,7 @@ app.get("/:id", (req, res) => {
 				const marca = document.querySelector(`#product_list > li:nth-child(${i}) > div > div > div.produto_info > div > h6`).innerText
 				const nome = document.querySelector(`#product_list > li:nth-child(${i}) > div > div > div.produto_info > div > a > h5`).innerText
 				const preco = document.querySelector(`#product_list > li:nth-child(${i}) > div > div > div.produto_info > div > div > div > span:nth-child(1)`).innerText
-				const img = "file:///C:/Users/Paulino/Downloads/procura%20aqui"+document.querySelector(`#product_list > li:nth-child(${i}) > div > div > div.produto_img > div.produto_img_in.produto_img_desktop_bt > span > a > img`).getAttribute("src")
+				const img = document.querySelector(`#product_list > li:nth-child(${i}) > div > div > div.produto_img > div.produto_img_in.produto_img_desktop_bt > span > a > img`).getAttribute("src")
 				const url = document.querySelector(`#product_list > li:nth-child(${i}) > div > div > div.produto_img > div.produto_img_in.produto_img_desktop_bt > span > a`).getAttribute("href")
 				
 				 const item = {
@@ -49,13 +54,14 @@ app.get("/:id", (req, res) => {
 			return { produtos }
 			
 		})
+		
 
 		
 		
 	}
 
 	//webScraping()
-	res.json(data2)
+	res.status(200).json(data2)
 	console.log('Terminou!')
 
 
