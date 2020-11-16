@@ -23,7 +23,7 @@ app.get("/:id", (req, res) => {
 
 
 		
-		const data = await page.evaluate(() => {
+		const data =  await page.evaluate(() => {
 			document.querySelector('#search_query_top').style.color = "red";
 			const todos = document.querySelectorAll('#product_list > li > div > div > div.produto_info > div > h6');
 			
@@ -54,14 +54,15 @@ app.get("/:id", (req, res) => {
 			return { produtos }
 			
 		})
-		
-
+		//await browser.close()
+	
 		
 		
 	}
-
+	res.status(200).send(data2)
 	//webScraping()
-	res.status(200).json(data2)
+
+	
 	console.log('Terminou!')
 
 
