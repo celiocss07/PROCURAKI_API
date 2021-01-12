@@ -2,8 +2,9 @@ const express = require('express')
 const app = express()
 const cheerio = require('cheerio')
 const axios = require('axios')
+const info = require('./resultado.json')
 
-const product = {}
+const product = []
 var indexGlobal = 0;
 
 app.get("", (req, res) => {
@@ -30,7 +31,7 @@ app.get("/:id", async (req, res) => {
                             .find(' div.produto_img > div.produto_img_in.produto_img_desktop_bt > span > a > img')
                             .attr('src')
 
-                        const marca = $(element)
+                        const categoria = $(element)
                             .find(' div.produto_info > div > h6')
                             .text()
 
@@ -38,7 +39,7 @@ app.get("/:id", async (req, res) => {
                             .find(' div.produto_info > div > a')
                             .attr('href')
 
-                        const desc = $(element)
+                        const name = $(element)
                             .find(' div.produto_info > div > a > h5')
                             .text()
 
@@ -46,14 +47,14 @@ app.get("/:id", async (req, res) => {
                         const price = $(element)
                             .find('div.produto_info > div > div > div > span')
                             .text()
-
+                        
 
                         product[index] = {
                             id,
-                            marca,
+                            categoria,
                             imgLink,
                             productLink,
-                            desc,
+                            name,
                             price
                         }
                         indexGlobal++;
@@ -66,47 +67,57 @@ app.get("/:id", async (req, res) => {
         }
 
         async function QUERAPIDOANGOLA() {
-            await axios.get(``)
+            await axios.get(`https://www.querapidoangola.com/?s=${req.params.id}&post_type=product`)
                 .then((result) => {
 
                     const $ = cheerio.load(result.data)
 
-                    $('.produto').each((index, element) => {
+                    $('#main > div > div > div > div.products > div.product-small').each((index, element) => {
+
+                        
                         const id = indexGlobal
 
 
                         const imgLink = $(element)
-                            .find(' div.produto_img > div.produto_img_in.produto_img_desktop_bt > span > a > img')
-                            .attr('src')
+                            .find('div.box-image > div.image-none > a > img ')
+                            .attr('srcset')
+                           
 
-                        const marca = $(element)
-                            .find(' div.produto_info > div > h6')
+                        const categoria = $(element)
+                            .find(' .col-inner > .product-small.box > .box-text.box-text-products > .title-wrapper > p.category')
                             .text()
+                           
+                          
+
+                        const name = $(element)
+                            .find('.col-inner > .product-small.box > .box-text.box-text-products > .title-wrapper > p.name.product-title > a')
+                            .text()
+                           
 
                         const productLink = $(element)
-                            .find(' div.produto_info > div > a')
+                            .find('.col-inner > .product-small.box > .box-text.box-text-products > .title-wrapper > p.name.product-title > a')
                             .attr('href')
+                            
 
-                        const desc = $(element)
-                            .find(' div.produto_info > div > a > h5')
-                            .text()
-
-
+                            
                         const price = $(element)
-                            .find('div.produto_info > div > div > div > span')
+                            .find('.col-inner > .product-small.box > .box-text.box-text-products > .price-wrapper > .price > .woocommerce-Price-amount > bdi')
                             .text()
+                            console.log(price)
 
 
                         product[index] = {
                             id,
-                            marca,
+                            categoria,
                             imgLink,
                             productLink,
-                            desc,
+                            name,
                             price
                         }
                         indexGlobal++;
                     })
+
+                    indexGlobal = 0;
 
                 })
                 .catch((err) => {
